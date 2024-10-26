@@ -34,17 +34,24 @@ export default class FormStepGenerator {
                 return;
             }
             const stepFields = this.#data.filter(field => field.step === this.#step).sort((acc, curr) => acc.order > curr.order ? 1 : -1);
-            new FormHTMLGenerator(this.#formName, this.#formNodeSelector, stepFields, this.#buttonText, this.#formCSSClasses);
+            const generateForm = new FormHTMLGenerator(this.#formName, this.#formNodeSelector, stepFields, this.#buttonText, this.#formCSSClasses);
+            if (generateForm.generateFormHTML() === false) {
+                reject();
+                return;
+            } 
             const formHandler = new FormHandler(this.#formNodeSelector, this.#submitUrl);
             formHandler.onSubmitInit(() => formHandler.formNode.classList.add(this.#loadingCSSClass));
             formHandler.onSubmitFinish(data => {
+                if (!data.response.ok) reject();
                 formHandler.formNode.classList.remove(this.#loadingCSSClass);
                 formHandler.removeAllListeners();
                 this.#step++;
                 if (this.#step > this.#totalSteps) {
                     resolve({ finished: true, data });
+                    return;
                 }
                 resolve({ finished: false, step: this.#step, data });
+                return;
             });
         });
     }

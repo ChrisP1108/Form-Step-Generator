@@ -25,6 +25,9 @@ export default class FormHTMLGenerator {
         this.#data = data;
         this.#submitButtonText = submitButtonText;
         this.#classes = classes;
+    }
+
+    #errorCheck() {
         if (!this.#outputNode) {
             console.error(`Output node must be provided to FormHTMLGenerator class.`);
         }
@@ -44,11 +47,12 @@ export default class FormHTMLGenerator {
         }
         this.#data.sort((acc, curr) => acc.order > curr.order ? 1 : -1);
         if (!keysError) {
-            this.#generateFormHTML();
+            return true;
         }
     }
 
-    #generateFormHTML() {
+    generateFormHTML() {
+        if (!this.#errorCheck()) return false;
         let outputHTML = '';
         outputHTML += `<form ${this.#classes ? `class="${this.#classes}"` : ``} data-name="${this.#name}">`;
         this.#data.forEach(field => {
