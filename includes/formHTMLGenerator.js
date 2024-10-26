@@ -19,19 +19,19 @@ export default class FormHTMLGenerator {
         value: null
     */
 
-    constructor(name = "form-output", outputNodeSelector = null, data = null, submitButtonText = "submit", classes = null) {
+    constructor(name = `form-output`, outputNodeSelector = null, data = null, submitButtonText = `submit`, classes = "") {
         this.#name = name;
         this.#outputNode = document.querySelector(outputNodeSelector);
         this.#data = data;
         this.#submitButtonText = submitButtonText;
         this.#classes = classes;
         if (!this.#outputNode) {
-            console.error("Output node must be provided to FormHTMLGenerator class.");
+            console.error(`Output node must be provided to FormHTMLGenerator class.`);
         }
         if (!this.#data || !this.#data.length) {
-            console.error("Data to generate form must be provided to FormHTMLGenerator class as an array.");
+            console.error(`Data to generate form must be provided to FormHTMLGenerator class as an array.`);
         }
-        const requiredDataKeys = ["order", "name", "type", "required", "label", "placeholder", "value"];
+        const requiredDataKeys = [`order`, `name`, `type`, `required`, `label`, `placeholder`, `value`];
 
         let keysError = false;
         if (this.#data && this.#data.length !== 0) {
