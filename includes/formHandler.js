@@ -139,6 +139,7 @@ export default class FormHandler {
     #handleFormSubmitResponse(formSubmit) {
         const outputMsgNode = document.createElement("p");
         outputMsgNode.setAttribute("role", "alert");
+        outputMsgNode.setAttribute("aria-live", "assertive");
         outputMsgNode.classList.add("form-submission-result-msg");
         if (!formSubmit.ok) {
             outputMsgNode.classList.add("form-submission-err-msg");

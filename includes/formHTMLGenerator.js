@@ -72,11 +72,12 @@ export default class FormHTMLGenerator {
                 case 'select':
                     if (field.options) {
                         outputHTML = `<select data-id="${field.id}" name="${field.name}" ${field.required ? `required` : ``} ${field.value !== null ? `value="${field.value}"` : ``}>`;
-                        outputHTML += field.options.map(option => `<option value=${option}>${option}</option>`).join("");
+                        outputHTML += field.options.map(option => `<option value="${option}">${option}</option>`).join("");
+                        outputHTML += `</select>`;
                     }
                     break;
                 case 'textarea':
-                    outputHTML = `<textarea data-id="${field.id}" name="${field.name}" ${field.reqiured ? `required` : ``} ${field.value !== null ? `value="${field.value}"` : ``}></textarea>`;
+                    outputHTML = `<textarea data-id="${field.id}" name="${field.name}" ${field.required ? `required` : ``} ${field.value !== null ? `value="${field.value}"` : ``}></textarea>`;
             }
         }
         return outputHTML;
