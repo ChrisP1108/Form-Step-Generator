@@ -1,3 +1,4 @@
+import HttpGet from "/helpers/httpReq.js";
 import FormStepGenerator from "/includes/formStepGenerator.js";
 
 export default async function InitSteps(input) {
@@ -7,12 +8,12 @@ export default async function InitSteps(input) {
     let running = true;
     let step = 1;
     try {
-        const res = await fetch(dataReqUrl);
+        const res = await HttpGet(dataReqUrl, 8000);
         if (!res.ok) {
-            console.error(`Response returned a ${res.status} code`);
+            console.error(`Response returned a ${res.status} status code`);
             return false;
         }
-        data = await res.json();
+        data = res.data;
         totalSteps = [...data].sort((acc, curr) => acc.step > curr.step ? -1 : 1)[0].step;
     } catch (err) {
         console.error(err);
