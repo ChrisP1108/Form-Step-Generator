@@ -40,7 +40,15 @@ export default class FormStepGenerator {
                 return;
             }
             const formHandler = new FormHandler(this.#formNodeSelector, this.#submitUrl, null, 8000);
-            formHandler.onSubmitInit(() => {
+            formHandler.onSubmitInit(d => {
+                const requiredFields = [];
+                formHandler.fieldNodes.forEach(field => {
+                    const parentNode = field.closest(`[data-field-container]`);
+                    if (parentNode.dataset.required === "true" && !requiredFields.includes(parentNode)) {
+                        requiredFields.push(parentNode);
+                    }
+                });
+                console.log(requiredFields);
                 formHandler.formNode.classList.add(this.#loadingCSSClass);
             });
             formHandler.onSubmitFinish(data => {

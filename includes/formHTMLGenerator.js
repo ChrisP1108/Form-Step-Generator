@@ -64,7 +64,7 @@ export default class FormHTMLGenerator {
 
     static generateInputFieldHTML(field) {
         const fieldIdName = `field-${field.order}-${field.name}`;
-        let outputHTML = `<div id="${fieldIdName}-container" class="field-container field-type-${field.type}" data-field-container data-name="${field.name}" 
+        let outputHTML = `<div id="${fieldIdName}-container" class="field-container field-type-${field.type}" data-field-container data-name="${field.name}" data-required="${field.required}"
             data-order="${field.order}" ${field.type === `checkbox` && field.minimumRequired ? `data-minimum-required="${field.minimumRequired}"` : ``} data-type="${field.type}">${field.label ? `<label for="${fieldIdName}" data-field-label class="field-label" data-required="${field.required}">${field.label}</label>` : ``}`;
         const inputFields = ['text', 'email', 'password'];
         if (inputFields.includes(field.type)) {

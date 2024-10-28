@@ -78,12 +78,11 @@ export default class FormHandler {
         });
         const formSubmitListener = async (e) => {
             e.preventDefault();
-            this.#onSubmitInitSubscribers.forEach(subscriber => subscriber(this.#formData));
-            if (this.validateFormData()) {
+            if (!this.#onSubmitInitSubscribers.some(subscriber => subscriber(this.#formData) === false)) {
                 const formSubmit = await this.#submitForm();
                 this.#handleFormSubmitResponse(formSubmit);
             } else {
-                console.error("Form validation failed.");
+                console.warn("Form validation failed.  One or more fields was not filled out correctly.");
             }
         };
         this.#formNode.addEventListener("submit", formSubmitListener);
@@ -136,12 +135,6 @@ export default class FormHandler {
             }
         } else this.#formData[node.name] = node.value;
         this.#onChangeSubscribers.forEach(subscriber => subscriber(this.#formData));
-    }
-
-    validateFormData() {
-        // Add form validation logic here
-        // Return true if valid, false otherwise
-        return true;
     }
 
     #handleFormSubmitResponse(formSubmit) {
