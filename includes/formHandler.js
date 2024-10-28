@@ -5,6 +5,7 @@ export default class FormHandler {
     #formNode;
     #fieldNodes = [];
     #formData = {};
+    #customFunctionsSubscribers = [];
     #onChangeSubscribers = [];
     #onSubmitFinishSubscribers = [];
     #onSubmitInitSubscribers = [];
@@ -18,11 +19,17 @@ export default class FormHandler {
     #customHeaders = {};
     #listenersMap = new Map(); // Store references to event listeners
 
-    constructor(formNode = null, submitUrl = null, responseSuccessMsg, timeOutDelay) {
+    constructor(formNode = null, submitUrl = null, responseSuccessMsg, timeOutDelay, customFunctionSubscriber = null) {
         this.#formNode = formNode ? document.querySelector(formNode) : null;
         this.#submitUrl = submitUrl;
         this.#responseSuccessMsg = typeof responseSuccessMsg === 'string' ? responseSuccessMsg : null;
         this.#timeoutDelay = timeOutDelay && Number(timeOutDelay) ? Number(timeOutDelay) : 8000;
+
+        if (typeof customFunctionSubscriber === 'function') {
+            this.#customFunctionsSubscribers.push(customFunctionSubscriber);
+        } else if (customFunctionSubscriber !== null){
+            console.error("customFunctionSubscriber parameter needs to be a function.");
+        }
 
         if (this.#formNode) {
             this.#selectAllFormInputNodes();
@@ -35,6 +42,7 @@ export default class FormHandler {
             ...this.#formNode.querySelectorAll("select"),
             ...this.#formNode.querySelectorAll("textarea")
         ];
+        this.#customFunctionsSubscribers.forEach(subscriber => subscriber([...this.#fieldNodes, this.#formNode.querySelector(`[type="submit"]`)]));
         this.#setEventListeners();
     }
 
@@ -178,6 +186,10 @@ export default class FormHandler {
         return this.#formNode;
     }
 
+    get fieldNodes() {
+        return this.#fieldNodes;
+    }
+
     get submissionResponse() {
         return this.#submissionResponse;
     }
@@ -226,6 +238,14 @@ export default class FormHandler {
             this.#customHeaders = headers;
         } else {
             console.error("customHeaders must be an object");
+        }
+    }
+
+    customFunction(callback ) {
+        if (typeof callback === 'function') {
+            this.#customFunctionsSubscribers.push(callback);
+        } else {
+            console.error("customFunction parameter needs to be a function.");
         }
     }
 

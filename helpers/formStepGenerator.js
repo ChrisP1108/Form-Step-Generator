@@ -38,9 +38,11 @@ export default class FormStepGenerator {
             if (generateForm.generateFormHTML() === false) {
                 reject();
                 return;
-            } 
-            const formHandler = new FormHandler(this.#formNodeSelector, this.#submitUrl);
-            formHandler.onSubmitInit(() => formHandler.formNode.classList.add(this.#loadingCSSClass));
+            }
+            const formHandler = new FormHandler(this.#formNodeSelector, this.#submitUrl, null, 8000);
+            formHandler.onSubmitInit(() => {
+                formHandler.formNode.classList.add(this.#loadingCSSClass);
+            });
             formHandler.onSubmitFinish(data => {
                 if (!data.response.ok) reject();
                 formHandler.formNode.classList.remove(this.#loadingCSSClass);

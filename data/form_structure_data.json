@@ -2,7 +2,7 @@
     {
         "id": 1,
         "step": 1,
-        "order": 2,
+        "order": 1,
         "name": "name",
         "type": "text",
         "required": true,
@@ -13,11 +13,24 @@
     {
         "id": 2,
         "step": 1,
-        "order": 1,
+        "order": 2,
         "name": "consent",
         "type": "radio",
         "required": true,
         "label": "Consent",
+        "placeholder": null,
+        "options": ["Yes", "No"],
+        "value": null
+    },
+    {
+        "id": 2,
+        "step": 1,
+        "order": 2,
+        "name": "agreements",
+        "type": "checkbox",
+        "required": true,
+        "minimumRequired": 1,
+        "label": "Do You Agree?",
         "placeholder": null,
         "options": ["Yes", "No"],
         "value": null

@@ -1,5 +1,5 @@
 import HttpGet from "/helpers/httpReq.js";
-import FormStepGenerator from "/includes/formStepGenerator.js";
+import FormStepGenerator from "/helpers/formStepGenerator.js";
 
 export default async function InitSteps(input) {
     const { dataReqUrl, formName, formNodeSelector, submitUrlOrigin, buttonText, formCSSClasses, submitLoadingCSSClass } = input;
