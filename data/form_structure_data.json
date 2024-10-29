@@ -29,7 +29,7 @@
         "name": "agreements",
         "type": "checkbox",
         "required": true,
-        "minimumRequired": 1,
+        "minimumRequired": 2,
         "label": "Do You Agree?",
         "placeholder": null,
         "options": ["Yes", "No"],
