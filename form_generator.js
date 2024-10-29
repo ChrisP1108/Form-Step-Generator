@@ -1,4 +1,4 @@
-import InitSteps from "/helpers/initSteps.js";
+import InitSteps from "/includes/initSteps.js";
 
 const initStepsInputData = {
     dataReqUrl: `/data/form_structure_data.json`,

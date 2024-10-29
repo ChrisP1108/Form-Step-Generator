@@ -99,7 +99,7 @@ export default class FormHTMLGenerator {
                     }).join("");
                     break;
                 case 'textarea':
-                outputHTML += `<textarea id="${fieldIdName}" data-field name="${field.name}" ${field.required && addRequiredAttribute ? `required` : ``} ${field.value !== null ? `value="${field.value}"` : ``}></textarea>`;
+                outputHTML += `<textarea id="${fieldIdName}" data-field name="${field.name}" ${field.required && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} ${field.value !== null ? `value="${field.value}"` : ``}></textarea>`;
             }
         }
         return outputHTML + `</div>`;

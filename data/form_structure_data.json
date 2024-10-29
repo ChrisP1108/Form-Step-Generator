@@ -23,7 +23,7 @@
         "value": null
     },
     {
-        "id": 2,
+        "id": 3,
         "step": 1,
         "order": 2,
         "name": "agreements",
@@ -36,7 +36,7 @@
         "value": null
     },
     {
-        "id": 3,
+        "id": 4,
         "step": 3,
         "order": 1,
         "name": "email",
@@ -47,7 +47,7 @@
         "value": null
     },
     {
-        "id": 4,
+        "id": 5,
         "step": 2,
         "order": 2,
         "name": "guest",
@@ -55,6 +55,29 @@
         "required": true,
         "label": null,
         "placeholder": "Guest",
+        "value": null
+    },
+    {
+        "id": 6,
+        "step": 2,
+        "order": 1,
+        "name": "description",
+        "type": "textarea",
+        "required": true,
+        "label": null,
+        "placeholder": "Description",
+        "value": null
+    },
+    {
+        "id": 7,
+        "step": 3,
+        "order": 2,
+        "name": "selection",
+        "type": "select",
+        "required": true,
+        "label": null,
+        "placeholder": "Selection",
+        "options": ["Yes", "No", "Maybe"],
         "value": null
     }
 ]
