@@ -75,8 +75,8 @@ export default class FormHTMLGenerator {
             switch(field.type) {
                 case 'select':
                     if (field.options) {
-                        outputHTML += `<select id="${fieldIdName}" data-field name="${field.name}" ${field.required  && addRequiredAttribute ? `required` : ``} ${field.value !== null ? `value="${field.value}"` : ``}>`;
-                        outputHTML += field.options.map(option => `<option value="${option}">${option}</option>`).join("");
+                        outputHTML += `<select id="${fieldIdName}" data-field name="${field.name}" ${field.required  && addRequiredAttribute ? `required` : ``}>`;
+                        outputHTML += field.options.map(option => `<option value="${option}" ${field.value && field.value.toLowerCase() === option.toLowerCase() ? `selected` : ``}>${option}</option>`).join("");
                         outputHTML += `</select>`;
                     }
                     break;
@@ -84,22 +84,24 @@ export default class FormHTMLGenerator {
                     outputHTML += field.options.map(option => {
                         const id = `${fieldIdName}-option-${option}`;
                         let output = `<div id="${fieldIdName}-option-${option}-container" class="radio-option-container" data-radio-option-container><label for="${id}" data-radio-option-field-label class="radio-option-field-label">${option}</label>`;
-                        output += `<input id="${id}" data-field type="radio" name="${field.name}" ${field.required && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} value="${option}" />`;
+                        output += `<input id="${id}" data-field type="radio" name="${field.name}" ${field.required && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} value="${option}" ${field.value && field.value.toLowerCase() === option.toLowerCase() ? `checked` : ``} />`;
                         output += `</div>`
                         return output;
                     }).join("");
                     break;
                 case 'checkbox':
                     outputHTML += field.options.map(option => {
+                        field.value = field.value !== null ? field.value.map(f => f.toLowerCase()) : null;
                         const id = `${fieldIdName}-option-${option}`;
                         let output = `<div id="${fieldIdName}-option-${option}-container" class="checkbox-option-container" data-checkbox-option-container><label for="${id}" data-radio-option-field-label class="radio-option-field-label">${option}</label>`;
-                        output += `<input id="${id}" data-field type="checkbox" data-minimum-required="${field.minimumRequired && field.minimumRequired !== 0 ? true : false}" name="${field.name}" ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} value="${option}" />`;
+                        output += `<input id="${id}" data-field type="checkbox" data-minimum-required="${field.minimumRequired && field.minimumRequired !== 0 ? true : false}" name="${field.name}" ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} value="${option}" ${field.value && field.value.includes(option.toLowerCase()) ? `checked` : ``} />`;
                         output += `</div>`
                         return output;
                     }).join("");
                     break;
                 case 'textarea':
-                outputHTML += `<textarea id="${fieldIdName}" data-field name="${field.name}" ${field.required && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} ${field.value !== null ? `value="${field.value}"` : ``}></textarea>`;
+                    outputHTML += `<textarea id="${fieldIdName}" data-field name="${field.name}" ${field.required && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``}>${field.value !== null ? field.value : ``}</textarea>`;
+                    break;
             }
         }
         return outputHTML + `</div>`;
