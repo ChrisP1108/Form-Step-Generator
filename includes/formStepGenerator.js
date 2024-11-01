@@ -40,17 +40,20 @@ export default class FormStepGenerator {
                 reject();
                 return;
             }
-            const formHandler = new FormDataHandler(this.#formNodeSelector, this.#submitUrl, null, 8000);
-            formHandler.onSubmitInit(formData => {
-                if (!FormFieldErrorHandler.incompleteFieldsChecker(formData, formHandler)) {
+            const formDataHandler = new FormDataHandler(this.#formNodeSelector, this.#submitUrl, null, 8000);
+            formDataHandler.onSubmitInit(formData => {
+                if (!FormFieldErrorHandler.incompleteFieldsChecker(formData, formDataHandler)) {
                     return false;
                 }
-                formHandler.formNode.classList.add(this.#loadingCSSClass);
+                formDataHandler.formData = Object.entries(formData).map(([key, value]) => {
+                    return { [key]: value, id: stepFields.find(field => field.name === key).id}
+                });
+                formDataHandler.formNode.classList.add(this.#loadingCSSClass);
             });
-            formHandler.onSubmitFinish(data => {
+            formDataHandler.onSubmitFinish(data => {
                 if (!data.response.ok) reject();
-                formHandler.formNode.classList.remove(this.#loadingCSSClass);
-                formHandler.removeAllListeners();
+                formDataHandler.formNode.classList.remove(this.#loadingCSSClass);
+                formDataHandler.removeAllListeners();
                 this.#step++;
                 console.log(data);
                 if (this.#step > this.#totalSteps) {

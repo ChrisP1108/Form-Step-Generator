@@ -3,6 +3,31 @@
         "id": 1,
         "step": 1,
         "order": 1,
+        "name": "names",
+        "type": "groupadd",
+        "required": true,
+        "label": null,
+        "placeholder": null,
+        "schema": [
+            {
+                "type": "text",
+                "required": true,
+                "label": null,
+                "placeholder": null 
+            },
+            {
+                "type": "checkbox",
+                "required": true,
+                "label": null,
+                "placeholder": null
+            }
+        ],
+        "value": null
+    },
+    {
+        "id": 18,
+        "step": 1,
+        "order": 2,
         "name": "name",
         "type": "text",
         "required": true,
@@ -13,7 +38,7 @@
     {
         "id": 2,
         "step": 1,
-        "order": 2,
+        "order": 3,
         "name": "consent",
         "type": "radio",
         "required": true,
@@ -29,7 +54,7 @@
         "name": "agreements",
         "type": "checkbox",
         "required": true,
-        "minimumRequired": 2,
+        "minimumRequired": 1,
         "label": "Do You Agree?",
         "placeholder": null,
         "options": ["Yes", "No"],
@@ -37,13 +62,13 @@
     },
     {
         "id": 4,
-        "step": 3,
+        "step": 2,
         "order": 1,
-        "name": "email",
-        "type": "email",
+        "name": "description",
+        "type": "textarea",
         "required": true,
         "label": null,
-        "placeholder": "Email",
+        "placeholder": "Description",
         "value": null
     },
     {
@@ -59,13 +84,13 @@
     },
     {
         "id": 6,
-        "step": 2,
+        "step": 3,
         "order": 1,
-        "name": "description",
-        "type": "textarea",
+        "name": "email",
+        "type": "email",
         "required": true,
         "label": null,
-        "placeholder": "Description",
+        "placeholder": "Email",
         "value": null
     },
     {

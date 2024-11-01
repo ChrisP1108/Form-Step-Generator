@@ -187,6 +187,10 @@ export default class FormDataHandler {
         return this.#submissionResponse;
     }
 
+    set formData(data) {
+        this.#formData = data;
+    }
+
     set submitUrl(url) {
         if (typeof url === 'string') {
             this.#submitUrl = url;

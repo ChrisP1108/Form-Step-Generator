@@ -1,4 +1,4 @@
-import InitSteps from "/includes/initSteps.js";
+import FormInitSteps from "/includes/formInitSteps.js";
 
 const initStepsInputData = {
     dataReqUrl: `/data/form_structure_data.json`,
@@ -10,7 +10,7 @@ const initStepsInputData = {
     submitLoadingCSSClass: `loading`
 }
 
-InitSteps(initStepsInputData).then(result => {
+FormInitSteps(initStepsInputData).then(result => {
     const formNode = document.querySelector(initStepsInputData.formNodeSelector);
     if (!result) {
         formNode.outerHTML = `<h1 class="err-msg">An error occured. Check browser console log for more details.</h1>`;
