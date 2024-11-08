@@ -63,9 +63,9 @@ export default class FormHTMLGenerator {
 
     static generateInputFieldHTML(field, addRequiredAttribute, addOnField = false) {
         const fieldIdName = `field-${field.order}-${field.name}`;
-        const addOnFieldParentName = addOnField ? `${field.addOnParentName}_` : ``;
+        const addOnFieldParentName = addOnField ? `${field.addOnParentName}__` : ``;
         const addOnFieldParam = addOnField ? `addon-sub-item-` : ``;
-        const addOnNumber = addOnField ? `-${field.order}` : ``;
+        const addOnNumber = addOnField ? `__${field.order}` : ``;
         let outputHTML = `<div id="${fieldIdName}-${addOnFieldParam}container" ${field.type === `addon` ? `data-addon-parent-container` : ``} class="field-container ${addOnField ? `add-on-field-container` : ``} field-type-${field.type}" data-${addOnFieldParam}field-container data-name="${addOnFieldParam}${field.name}" data-required="${field.required}"
             data-order="${field.order}" ${field.type === `checkbox` && field.minimumRequired ? `data-minimum-required="${field.minimumRequired}"` : ``} data-type="${field.type}">${field.label ? `<label for="${fieldIdName}" data-field-label class="field-label" data-required="${field.required}">${field.label}</label>` : ``}`;
         const inputFields = ['text', 'email', 'password'];

@@ -29,7 +29,7 @@
                 "fields": [
                     {
                         "name": "person",
-                        "value": "Person 1"
+                        "value": "Person 1 Addon field"
                     },
                     {
                         "name": "testCheckbox",
@@ -42,7 +42,7 @@
                 "fields": [
                     {
                         "name": "person",
-                        "value": "Person 2"
+                        "value": "Person 2 Addon field"
                     },
                     {
                         "name": "testCheckbox",

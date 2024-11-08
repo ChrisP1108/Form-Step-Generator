@@ -59,30 +59,42 @@ export default class FormStepGenerator {
                 if (!FormFieldErrorHandler.incompleteFieldsChecker(formData, formDataHandler)) {
                     return false;
                 }
-                const revisedData = {};
+                const revisedData = [];
+
+                // Collects input, select, textarea nodes and separates if part of an addon or individual
+
                 Object.entries(formData).forEach(([key, value]) => {
                     let id = null;
-                    if (key.includes("_") && key.includes("-")) {
-                        const addOnParentName = key.split("_")[0];
-                        id = stepFields.find(field => field.name === addOnParentName)?.id;
-                        if (!revisedData[addOnParentName]?.value) {
-                            revisedData[addOnParentName] = { };
-                            revisedData[addOnParentName].value = [];
+                    
+                    // Handles addon fields by grouping their values together in an array, having order and field keys, with the addon field names and values as an array in field key
+
+                    if (key.includes("__")) {
+                        const [addOnParentName, addOnName, order] = key.split("__");
+                        const { id, name } = stepFields.find(field => field.name === addOnParentName);
+                        const addOnFieldNameValue = Object.entries(formData).filter(([k, v]) => k.split("__")[2] === order);
+                        const addOnValues = addOnFieldNameValue.map(f => {
+                            return {
+                                name: f[0].split("__")[1],
+                                value: f[1]
+                            }
+                        });
+                        if (!revisedData.some(f => f.id === id && f.name === name)) {
+                            revisedData.push({ id, name, value: [{ order: Number(order), fields: addOnValues}]});
                         } else {
-                            revisedData[addOnParentName].value = { [key]: value }
+                            const existingAddOnDataIndex = revisedData.findIndex(f => f.id === id && f.name === name);
+                            if (!revisedData[existingAddOnDataIndex].value.some(f => f.order === Number(order))) {
+                                revisedData[existingAddOnDataIndex].value = [...revisedData[existingAddOnDataIndex].value, { order: Number(order), fields: addOnValues}];
+                            }
                         }
-                        revisedData[addOnParentName].id = id;
+
+                    // Handles all non addon fields
+
                     } else {
-                        id = stepFields.find(field => field.name === key)?.id;
-                        if (!revisedData[key]) {
-                            revisedData[key] = { };
-                        }
-                        revisedData[key].value = value;
-                        revisedData[key].id = id;
+                        const { id, name } = stepFields.find(field => field.name === key);
+                        revisedData.push({ id, name, value })
                     }
                 });
                 formDataHandler.formData = revisedData;
-                console.log(formDataHandler.formData);
                 formDataHandler.formNode.classList.add(this.#loadingCSSClass);
             });
             formDataHandler.onSubmitFinish(data => {
