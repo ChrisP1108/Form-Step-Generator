@@ -4,25 +4,54 @@
         "step": 1,
         "order": 1,
         "name": "names",
-        "type": "groupadd",
+        "type": "addon",
         "required": true,
-        "label": null,
-        "placeholder": null,
+        "minimumRequired": 2,
         "schema": [
             {
+                "name": "person",
                 "type": "text",
                 "required": true,
-                "label": null,
-                "placeholder": null 
+                "placeholder": "Person" 
             },
             {
+                "name": "testCheckbox",
                 "type": "checkbox",
                 "required": true,
-                "label": null,
-                "placeholder": null
+                "label": "Test checkbox",
+                "minimumRequired": 1,
+                "options": ["Yes", "No"]
             }
         ],
-        "value": null
+        "value": [
+            {
+                "order": 1,
+                "fields": [
+                    {
+                        "name": "person",
+                        "value": "Person 1"
+                    },
+                    {
+                        "name": "testCheckbox",
+                        "label": "Test Checkbox",
+                        "value": ["Yes", "No"]
+                    }
+                ]
+            },
+            {
+                "order": 2,
+                "fields": [
+                    {
+                        "name": "person",
+                        "value": "Person 2"
+                    },
+                    {
+                        "name": "testCheckbox",
+                        "value": false
+                    }
+                ]
+            }
+        ]
     },
     {
         "id": 18,
@@ -31,9 +60,7 @@
         "name": "name",
         "type": "text",
         "required": true,
-        "label": null,
-        "placeholder": "Name",
-        "value": null
+        "placeholder": "Name"
     },
     {
         "id": 2,
@@ -43,9 +70,7 @@
         "type": "radio",
         "required": true,
         "label": "Consent",
-        "placeholder": null,
-        "options": ["Yes", "No"],
-        "value": null
+        "options": ["Yes", "No"]
     },
     {
         "id": 3,
@@ -57,8 +82,7 @@
         "minimumRequired": 1,
         "label": "Do You Agree?",
         "placeholder": null,
-        "options": ["Yes", "No"],
-        "value": null
+        "options": ["Yes", "No"]
     },
     {
         "id": 4,
@@ -68,8 +92,7 @@
         "type": "textarea",
         "required": true,
         "label": null,
-        "placeholder": "Description",
-        "value": null
+        "placeholder": "Description"
     },
     {
         "id": 5,
@@ -79,8 +102,7 @@
         "type": "text",
         "required": true,
         "label": null,
-        "placeholder": "Guest",
-        "value": null
+        "placeholder": "Guest"
     },
     {
         "id": 6,
@@ -90,8 +112,7 @@
         "type": "email",
         "required": true,
         "label": null,
-        "placeholder": "Email",
-        "value": null
+        "placeholder": "Email"
     },
     {
         "id": 7,
@@ -102,7 +123,6 @@
         "required": true,
         "label": null,
         "placeholder": "Selection",
-        "options": ["Yes", "No", "Maybe"],
-        "value": null
+        "options": ["Yes", "No", "Maybe"]
     }
 ]
