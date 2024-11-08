@@ -61,19 +61,21 @@ export default class FormHTMLGenerator {
         this.#outputNode.outerHTML = outputHTML;
     }
 
-    static generateInputFieldHTML(field, addRequiredAttribute, subField = false) {
+    static generateInputFieldHTML(field, addRequiredAttribute, addOnField = false) {
         const fieldIdName = `field-${field.order}-${field.name}`;
-        const subFieldParam = subField ? `addon-sub-item-` : ``;
-        let outputHTML = `<div id="${fieldIdName}-${subFieldParam}container" class="${subFieldParam}field-container field-type-${field.type}" data-${subFieldParam}field-container data-name="${subFieldParam}${field.name}" data-required="${field.required}"
+        const addOnFieldParentName = addOnField ? `${field.addOnParentName}_` : ``;
+        const addOnFieldParam = addOnField ? `addon-sub-item-` : ``;
+        const addOnNumber = addOnField ? `-${field.order}` : ``;
+        let outputHTML = `<div id="${fieldIdName}-${addOnFieldParam}container" ${field.type === `addon` ? `data-addon-parent-container` : ``} class="field-container ${addOnField ? `add-on-field-container` : ``} field-type-${field.type}" data-${addOnFieldParam}field-container data-name="${addOnFieldParam}${field.name}" data-required="${field.required}"
             data-order="${field.order}" ${field.type === `checkbox` && field.minimumRequired ? `data-minimum-required="${field.minimumRequired}"` : ``} data-type="${field.type}">${field.label ? `<label for="${fieldIdName}" data-field-label class="field-label" data-required="${field.required}">${field.label}</label>` : ``}`;
         const inputFields = ['text', 'email', 'password'];
         if (inputFields.includes(field.type)) {
-            outputHTML += `<input id="${fieldIdName}" data-field type="${field.type}" name="${field.name}" ${field.required  && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} ${field.value ? `value="${field.value}"` : ``} />`;
+            outputHTML += `<input id="${fieldIdName}" ${addOnField ? `data-add-on-field` : ``} data-field type="${field.type}" name="${addOnFieldParentName}${field.name}${addOnNumber}" ${field.required  && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} ${field.value ? `value="${field.value}"` : ``} />`;
         } else {
             switch(field.type) {
                 case 'select':
                     if (field.options) {
-                        outputHTML += `<select id="${fieldIdName}" data-field name="${field.name}" ${field.required  && addRequiredAttribute ? `required` : ``}>`;
+                        outputHTML += `<select id="${fieldIdName}" ${addOnField ? `data-add-on-field` : ``} data-field name="${addOnFieldParentName}${field.name}${addOnNumber}" ${field.required  && addRequiredAttribute ? `required` : ``}>`;
                         outputHTML += field.options.map(option => `<option value="${option}" ${field.value && field.value.toLowerCase() === option.toLowerCase() ? `selected` : ``}>${option}</option>`).join("");
                         outputHTML += `</select>`;
                     }
@@ -82,7 +84,7 @@ export default class FormHTMLGenerator {
                     outputHTML += field.options.map(option => {
                         const id = `${fieldIdName}-option-${option}`;
                         let output = `<div id="${fieldIdName}-option-${option}-container" class="radio-option-container" data-radio-option-container><label for="${id}" data-radio-option-field-label class="radio-option-field-label">${option}</label>`;
-                        output += `<input id="${id}" data-field type="radio" name="${field.name}" ${field.required && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} value="${option}" ${field.value && field.value.toLowerCase() === option.toLowerCase() ? `checked` : ``} />`;
+                        output += `<input id="${id}" ${addOnField ? `data-add-on-field` : ``} data-field type="radio" name="${addOnFieldParentName}${field.name}${addOnNumber}" ${field.required && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} value="${option}" ${field.value && field.value.toLowerCase() === option.toLowerCase() ? `checked` : ``} />`;
                         output += `</div>`
                         return output;
                     }).join("");
@@ -92,20 +94,20 @@ export default class FormHTMLGenerator {
                         field.value = field.value ? field.value.map(f => f.toLowerCase()) : null;
                         const id = `${fieldIdName}-option-${option}`;
                         let output = `<div id="${fieldIdName}-option-${option}-container" class="checkbox-option-container" data-checkbox-option-container><label for="${id}" data-radio-option-field-label class="radio-option-field-label">${option}</label>`;
-                        output += `<input id="${id}" data-field type="checkbox" data-minimum-required="${field.minimumRequired && field.minimumRequired !== 0 ? true : false}" name="${field.name}" ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} value="${option}" ${field.value && field.value.includes(option.toLowerCase()) ? `checked` : ``} />`;
+                        output += `<input id="${id}" ${addOnField ? `data-add-on-field` : ``} data-field type="checkbox" data-minimum-required="${field.minimumRequired && field.minimumRequired !== 0 ? true : false}" name="${addOnFieldParentName}${field.name}${addOnNumber}" ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} value="${option}" ${field.value && field.value.includes(option.toLowerCase()) ? `checked` : ``} />`;
                         output += `</div>`
                         return output;
                     }).join("");
                     break;
                 case 'textarea':
-                    outputHTML += `<textarea id="${fieldIdName}" data-field name="${field.name}" ${field.required && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``}>${field.value ? field.value : ``}</textarea>`;
+                    outputHTML += `<textarea id="${fieldIdName}" data-field name="${addOnFieldParentName}${field.name}${addOnNumber}" ${field.required && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``}>${field.value ? field.value : ``}</textarea>`;
                     break;
                 case 'addon':
                     field.value.forEach(group => {
-                        outputHTML += `<div id="${fieldIdName}-sub-row-group-container">`;
+                        outputHTML += `<div id="field-${group.order}-${field.name}-addon-group-container" data-addon-group-container>`;
                         group.fields.forEach(f => {
                             const addOnFieldSchema = field.schema.find(sch => sch.name === f.name);
-                            const addOnFieldData = { order: group.order, value: f.value, ...addOnFieldSchema };
+                            const addOnFieldData = { order: group.order, value: f.value, ...addOnFieldSchema, addOnParentName: field.name };
                             outputHTML += FormHTMLGenerator.generateInputFieldHTML(addOnFieldData, addRequiredAttribute, true);
                         });
                         outputHTML += `</div>`;

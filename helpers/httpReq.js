@@ -1,3 +1,5 @@
+// HTTP Get request handler
+
 export default function HttpGet(url, timeoutDelay = 8000) {
     const timeoutPromise = new Promise((resolve, reject) => {
         setTimeout(() => {

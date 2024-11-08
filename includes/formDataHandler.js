@@ -4,7 +4,7 @@ export default class FormDataHandler {
 
     #formNode;
     #fieldNodes = [];
-    #formData = {};
+    formData = {};
     #customFunctionsSubscribers = [];
     #onChangeSubscribers = [];
     #onSubmitFinishSubscribers = [];
@@ -54,7 +54,7 @@ export default class FormDataHandler {
                 node.value = '';
             }
         });
-        this.#formData = {};
+        this.formData = {};
     }
 
     removeFormFields() {
@@ -78,7 +78,7 @@ export default class FormDataHandler {
         });
         const formSubmitListener = async (e) => {
             e.preventDefault();
-            if (!this.#onSubmitInitSubscribers.some(subscriber => subscriber(this.#formData) === false)) {
+            if (!this.#onSubmitInitSubscribers.some(subscriber => subscriber(this.formData) === false)) {
                 const formSubmit = await this.#submitForm();
                 this.#handleFormSubmitResponse(formSubmit);
             } else {
@@ -112,29 +112,29 @@ export default class FormDataHandler {
     #updateFormData(node) {
         if (node.type === 'radio') {
             if (node.checked) {
-                this.#formData[node.name] = node.value;
-            } else this.#formData[node.name] = '';
+                this.formData[node.name] = node.value;
+            } else this.formData[node.name] = '';
         } else if (node.type === 'checkbox') {
             const multipleChoiceCheckboxes = this.#fieldNodes.filter(n => n.name === node.name);
             if (multipleChoiceCheckboxes.length > 1) {
-                if (this.#formData[node.name]) {
-                    if (this.#formData[node.name].includes(node.value) && !node.checked) {
-                        this.#formData[node.name] = this.#formData[node.name].filter(selection => selection !== node.value);
-                        this.#formData[node.name].sort();
+                if (this.formData[node.name]) {
+                    if (this.formData[node.name].includes(node.value) && !node.checked) {
+                        this.formData[node.name] = this.formData[node.name].filter(selection => selection !== node.value);
+                        this.formData[node.name].sort();
                     } else if (node.checked) {
-                        this.#formData[node.name].push(node.value);
-                        this.#formData[node.name].sort();
+                        this.formData[node.name].push(node.value);
+                        this.formData[node.name].sort();
                     }
                 } else if (node.checked) {
-                    this.#formData[node.name] = [node.value];
-                } else this.#formData[node.name] = [];
+                    this.formData[node.name] = [node.value];
+                } else this.formData[node.name] = [];
             } else {
                 if (node.checked) {
-                    this.#formData[node.name] = node.value;
-                } else this.#formData[node.name] = '';
+                    this.formData[node.name] = node.value;
+                } else this.formData[node.name] = '';
             }
-        } else this.#formData[node.name] = node.value;
-        this.#onChangeSubscribers.forEach(subscriber => subscriber(this.#formData));
+        } else this.formData[node.name] = node.value;
+        this.#onChangeSubscribers.forEach(subscriber => subscriber(this.formData));
     }
 
     #handleFormSubmitResponse(formSubmit) {
@@ -158,17 +158,17 @@ export default class FormDataHandler {
             });
         }
         this.#submissionResponse = formSubmit;
-        this.#onSubmitFinishSubscribers.forEach(subscriber => subscriber({ response: this.#submissionResponse, formData: this.#formData }));
+        this.#onSubmitFinishSubscribers.forEach(subscriber => subscriber({ response: this.#submissionResponse, formData: this.formData }));
         if (this.#clearFieldsOnSuccess) this.clearFields();
         if (this.#removeFormFieldsOnSuccess) this.removeFormFields();
     }
 
     get data() {
-        return this.#formData;
+        return this.formData;
     }
 
     get JSON() {
-        return JSON.stringify(this.#formData);
+        return JSON.stringify(this.formData);
     }
 
     get submitUrl() {
@@ -185,10 +185,6 @@ export default class FormDataHandler {
 
     get submissionResponse() {
         return this.#submissionResponse;
-    }
-
-    set formData(data) {
-        this.#formData = data;
     }
 
     set submitUrl(url) {

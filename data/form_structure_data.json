@@ -33,8 +33,7 @@
                     },
                     {
                         "name": "testCheckbox",
-                        "label": "Test Checkbox",
-                        "value": ["Yes", "No"]
+                        "value": ["Yes"]
                     }
                 ]
             },

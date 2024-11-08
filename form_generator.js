@@ -1,5 +1,7 @@
 import FormInitSteps from "/includes/formInitSteps.js";
 
+// Defines where to get starting data from, the name of the form, what HTML node to render form to, url to submit form data, and CSS class names
+
 const initStepsInputData = {
     dataReqUrl: `/data/form_structure_data.json`,
     formName: `form-output`,
@@ -9,6 +11,8 @@ const initStepsInputData = {
     formCSSClasses: `form-styling`,
     submitLoadingCSSClass: `loading`
 }
+
+// Initializes form creation.
 
 FormInitSteps(initStepsInputData).then(result => {
     const formNode = document.querySelector(initStepsInputData.formNodeSelector);

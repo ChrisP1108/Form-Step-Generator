@@ -7,6 +7,9 @@ export default async function FormInitSteps(input) {
     let totalSteps = null;
     let running = true;
     let step = 1;
+
+    // Gets starting data 
+
     try {
         const res = await HttpGet(dataReqUrl, 8000);
         if (!res.ok) {
@@ -19,6 +22,9 @@ export default async function FormInitSteps(input) {
         console.error(err);
         return false;
     }
+
+    // Runs FormStepGenerator in continuous loop for generating form steps until FormStepGenerator returns a finished key with a value of true
+    
     while(running) {  
         try {
             const generateStep = new FormStepGenerator(formName, formNodeSelector, step, data, submitUrlOrigin, totalSteps, buttonText, formCSSClasses, submitLoadingCSSClass);
@@ -31,5 +37,8 @@ export default async function FormInitSteps(input) {
             return false;
         }
     }
+
+    //  Returns true back to FormInitSteps to indicate successful completion
+    
     return true;
 }
