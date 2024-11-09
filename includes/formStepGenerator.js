@@ -56,9 +56,6 @@ export default class FormStepGenerator {
 
             const formDataHandler = new FormDataHandler(this.#formNodeSelector, this.#submitUrl, null, 8000);
             formDataHandler.onSubmitInit(formData => {
-                if (!FormFieldErrorHandler.incompleteFieldsChecker(formData, formDataHandler)) {
-                    return false;
-                }
                 const revisedData = [];
 
                 // Collects input, select, textarea nodes and separates if part of an addon or individual
@@ -95,6 +92,12 @@ export default class FormStepGenerator {
                     }
                 });
                 formDataHandler.formData = revisedData;
+
+                // Perform error check prior to submitting.  Return false to stop submission of incomplete fields are detected.
+
+                if (!FormFieldErrorHandler.incompleteFieldsChecker(revisedData, formDataHandler)) {
+                    return false;
+                }
                 formDataHandler.formNode.classList.add(this.#loadingCSSClass);
             });
             formDataHandler.onSubmitFinish(data => {

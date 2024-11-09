@@ -66,8 +66,8 @@ export default class FormHTMLGenerator {
         const addOnFieldParentName = addOnField ? `${field.addOnParentName}__` : ``;
         const addOnFieldParam = addOnField ? `addon-sub-item-` : ``;
         const addOnNumber = addOnField ? `__${field.order}` : ``;
-        let outputHTML = `<div id="${fieldIdName}-${addOnFieldParam}container" ${field.type === `addon` ? `data-addon-parent-container` : ``} class="field-container ${addOnField ? `add-on-field-container` : ``} field-type-${field.type}" data-${addOnFieldParam}field-container data-name="${addOnFieldParam}${field.name}" data-required="${field.required}"
-            data-order="${field.order}" ${field.type === `checkbox` && field.minimumRequired ? `data-minimum-required="${field.minimumRequired}"` : ``} data-type="${field.type}">${field.label ? `<label for="${fieldIdName}" data-field-label class="field-label" data-required="${field.required}">${field.label}</label>` : ``}`;
+        let outputHTML = `<div id="${fieldIdName}-${addOnFieldParam}container" ${field.type === `addon` ? `data-addon-parent-container` : ``} class="field-container${addOnField ? `add-on-field-container` : ``} field-type-${field.type}" data-${addOnFieldParam}field-container data-name="${addOnFieldParam}${field.name}" data-required="${field.required}"
+            data-order="${field.order}" ${field.minimumRequired ? `data-minimum-required="${field.minimumRequired}"` : ``} data-type="${field.type}">${field.label ? `<label for="${fieldIdName}" data-field-label class="field-label" data-required="${field.required}">${field.label}</label>` : ``}`;
         const inputFields = ['text', 'email', 'password'];
         if (inputFields.includes(field.type)) {
             outputHTML += `<input id="${fieldIdName}" ${addOnField ? `data-add-on-field` : ``} data-field type="${field.type}" name="${addOnFieldParentName}${field.name}${addOnNumber}" ${field.required  && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} ${field.value ? `value="${field.value}"` : ``} />`;

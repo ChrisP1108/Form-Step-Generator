@@ -4,10 +4,23 @@ export default class FormFieldErrorHandler {
         return {node, errMsg};
     }
 
+    static #initErrorFixListener(field, nodeName, listenerType, errMsgNodeSelector, incompleteFieldCSS) {
+        field.querySelectorAll(nodeName).forEach(node => {
+            node.addEventListener(listenerType, () => {
+                field.classList.remove(incompleteFieldCSS);
+                const errMsgNode = field.querySelector(errMsgNodeSelector);
+                if (errMsgNode) errMsgNode.remove();
+            });
+        });
+    }
+
     static #setErrorFieldsChangeHandling(field, incompleteFieldCSS, errMsgNodeSelector) {
         field.classList.add(incompleteFieldCSS);
         let listenerType = null;
         let nodeName = null;
+
+        // Error check on non addon fields
+
         switch (field.dataset.type) {
             case 'select':
                 listenerType =  'change';
@@ -23,13 +36,13 @@ export default class FormFieldErrorHandler {
                 break;
         }
         if (listenerType) {
-            field.querySelectorAll(nodeName).forEach(node => {
-                node.addEventListener(listenerType, () => {
-                    field.classList.remove(incompleteFieldCSS);
-                    const errMsgNode = field.querySelector(errMsgNodeSelector);
-                    if (errMsgNode) errMsgNode.remove();
-                });
-            });
+            FormFieldErrorHandler.#initErrorFixListener(field, nodeName, listenerType, errMsgNodeSelector);
+        }
+        if (field.dataset.type === "addon") {
+            FormFieldErrorHandler.#initErrorFixListener(field, "input", "input", errMsgNodeSelector, incompleteFieldCSS);
+            FormFieldErrorHandler.#initErrorFixListener(field, "input", "change", errMsgNodeSelector, incompleteFieldCSS);
+            FormFieldErrorHandler.#initErrorFixListener(field, "textarea", "input", errMsgNodeSelector, incompleteFieldCSS);
+            FormFieldErrorHandler.#initErrorFixListener(field, "select", "change", errMsgNodeSelector, incompleteFieldCSS);
         }
     }
 
@@ -46,10 +59,11 @@ export default class FormFieldErrorHandler {
             }
         });
         requiredFields.forEach(field => {
-            let errorToAdd = null
+            let errorToAdd = null;
+            const fieldData = formData.find(f => f.name === field.dataset.name);
             switch(field.dataset.type) {
                 case 'checkbox':
-                    if (field.dataset.minimumRequired && formData[field.dataset.name].length < field.dataset.minimumRequired) {
+                    if (field.dataset.minimumRequired && fieldData.value.length < field.dataset.minimumRequired) {
                         errorToAdd = FormFieldErrorHandler.#incompleteFieldMsgGenerator(field, `${field.dataset.minimumRequired} option(s) must be checked at a minimum.`);
                         FormFieldErrorHandler.#setErrorFieldsChangeHandling(field, incompleteFieldCSS, errMsgNodeSelector);
                     } 
@@ -59,6 +73,12 @@ export default class FormFieldErrorHandler {
                         errorToAdd = FormFieldErrorHandler.#incompleteFieldMsgGenerator(field, `1 option must be selected.`);
                         FormFieldErrorHandler.#setErrorFieldsChangeHandling(field, incompleteFieldCSS, errMsgNodeSelector);
                     }
+                    break;
+                case 'addon':
+                    if (field.dataset.minimumRequired && fieldData.value.length < field.dataset.minimumRequired) {
+                        errorToAdd = FormFieldErrorHandler.#incompleteFieldMsgGenerator(field, `${field.dataset.minimumRequired} item(s) must be set at a minimum.`);
+                        FormFieldErrorHandler.#setErrorFieldsChangeHandling(field, incompleteFieldCSS, errMsgNodeSelector);
+                    } 
                     break;
                 default:
                     const inputNode = field.querySelector("input, select, textarea");
