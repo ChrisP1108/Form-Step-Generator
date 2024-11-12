@@ -1,22 +1,10 @@
+import { state } from "/formState.js";
+
 export default class StateStore {
 
     // Enter State Variables Inside #state property
 
-    static #state = {
-        dataReqUrl: `/data/form_structure_data.json`,
-        formName: `form-output`,
-        formNodeSelector: `[data-name="form-output"]`,
-        submitUrlOrigin: `https://jsonplaceholder.typicode.com/posts`,
-        buttonText: `Submit`,
-        formCSSClasses: `form-styling`,
-        submitLoadingCSSClass: `loading`,
-        apiData: null,
-        totalSteps: null,
-        running: true,
-        step: 1,
-        stepFieldsData: [],
-        addRequiredAttribute: false
-    };
+    static #state = state;
 
     static #subscribers = Object.keys(StateStore.#state).reduce((curr, acc) => ({...curr, [acc]: []}), {});
 
@@ -30,6 +18,10 @@ export default class StateStore {
             return undefined;
         }
         return StateStore.#state[key];
+    }
+
+    static getAll() {
+        return StateStore.#state;
     }
 
     static set(key, value) {
