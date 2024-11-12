@@ -46,21 +46,18 @@ export default class FormFieldErrorHandler {
         }
     }
 
-    static incompleteFieldsChecker(formData, formHandler) {
-        const requiredFields = [];
+    static incompleteFieldsChecker(formData, formHandler, data) {
         const errorFields = [];
         const incompleteFieldCSS = "incomplete-field-alert";
         const errMsgNodeDatasetCSS = "field-incomplete-msg";
         const errMsgNodeSelector = `[data-type="${errMsgNodeDatasetCSS}"]`;
-        formHandler.fieldNodes.forEach(field => {
+        const requiredFields = formHandler.fieldNodes.filter(field => {
             const parentNode = field.closest(`[data-field-container]`);
-            if (parentNode.dataset.required === "true" && !requiredFields.includes(parentNode)) {
-                requiredFields.push(parentNode);
-            }
+            const fieldData = data.find(f => f.name === parentNode.dataset.name);
+            return fieldData.required === true;
         });
         requiredFields.forEach(field => {
             let errorToAdd = null;
-            const fieldData = formData.find(f => f.name === field.dataset.name);
             switch(field.dataset.type) {
                 case 'checkbox':
                     if (field.dataset.minimumRequired && fieldData.value.length < field.dataset.minimumRequired) {

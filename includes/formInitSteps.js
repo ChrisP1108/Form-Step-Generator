@@ -1,23 +1,19 @@
 import HttpGet from "/helpers/httpReq.js";
 import FormStepGenerator from "/includes/formStepGenerator.js";
+import StateStore from "/includes/stateStore.js";
 
-export default async function FormInitSteps(input) {
-    const { dataReqUrl, formName, formNodeSelector, submitUrlOrigin, buttonText, formCSSClasses, submitLoadingCSSClass } = input;
-    let data = null;
-    let totalSteps = null;
-    let running = true;
-    let step = 1;
+export default async function FormInitSteps() {
 
     // Gets starting data 
 
     try {
-        const res = await HttpGet(dataReqUrl, 8000);
+        const res = await HttpGet(StateStore.get("dataReqUrl"), 8000);
         if (!res.ok) {
             console.error(`Response returned a ${res.status} status code`);
             return false;
         }
-        data = res.data;
-        totalSteps = [...data].sort((acc, curr) => acc.step > curr.step ? -1 : 1)[0].step;
+        StateStore.set("apiData",res.data);
+        StateStore.set("totalSteps", [...StateStore.get("apiData")].sort((acc, curr) => acc.step > curr.step ? -1 : 1)[0].step);
     } catch (err) {
         console.error(err);
         return false;
@@ -25,15 +21,12 @@ export default async function FormInitSteps(input) {
 
     // Runs FormStepGenerator in continuous loop for generating form steps until FormStepGenerator returns a finished key with a value of true
     
-    while(running) {  
+    while(StateStore.get("running")) {  
         try {
-            const generateStep = new FormStepGenerator(formName, formNodeSelector, step, data, submitUrlOrigin, totalSteps, buttonText, formCSSClasses, submitLoadingCSSClass);
-            const result = await generateStep.generate();
-            step = result.step;
-            running = !result.finished;
+            await FormStepGenerator.generate();
         } catch (err) {
             if (err) console.error(err);
-            running = false;
+            StateStore.set("running", false);
             return false;
         }
     }

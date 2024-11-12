@@ -1,3 +1,5 @@
+import StateStore from "/includes/stateStore.js";
+
 export default class FormHTMLGenerator {
 
     // Properties
@@ -17,48 +19,33 @@ export default class FormHTMLGenerator {
         required: true,
     */
 
-    constructor(name = `form-output`, outputNodeSelector = null, data = null, submitButtonText = `submit`, addRequiredAttribute = false, classes = "") {
-        this.#name = name;
-        this.#outputNode = document.querySelector(outputNodeSelector);
-        this.#data = data;
-        this.#submitButtonText = submitButtonText;
-        this.#addRequiredAttribute = addRequiredAttribute;
-        this.#classes = classes;
-    }
-
-    #errorCheck() {
-        if (!this.#outputNode) {
-            console.error(`Output node must be provided to FormHTMLGenerator class.`);
-        }
-        if (!this.#data || !this.#data.length) {
-            console.error(`Data to generate form must be provided to FormHTMLGenerator class as an array.`);
-        }
+    static #errorCheck() {
         const requiredDataKeys = [`order`, `name`, `type`];
 
         let keysError = false;
-        if (this.#data && this.#data.length !== 0) {
-            this.#data.forEach((field, index) => {
+        if (StateStore.get("apiData") && StateStore.get("apiData").length !== 0) {
+            StateStore.get("apiData").forEach((field, index) => {
                 if (!requiredDataKeys.every(key => Object.keys(field).includes(key))) {
                     console.error(`Data at index "${index}" is missing one or more required key fields. Required fields are "${requiredDataKeys.join(", ")}".`);
                     keysError = true;
                 }
             });
         }
-        this.#data.sort((acc, curr) => acc.order > curr.order ? 1 : -1);
+        StateStore.set("apiData", [...StateStore.get("apiData")].sort((acc, curr) => acc.order > curr.order ? 1 : -1));
         if (!keysError) {
             return true;
         }
     }
 
-    generateFormHTML() {
-        if (!this.#errorCheck()) return false;
+    static generateFormHTML() {
+        if (!FormHTMLGenerator.#errorCheck()) return false;
         let outputHTML = '';
-        outputHTML += `<form ${this.#classes ? `class="${this.#classes}"` : ``} data-name="${this.#name}">`;
-        this.#data.forEach(field => {
-            outputHTML += FormHTMLGenerator.generateInputFieldHTML(field, this.#addRequiredAttribute);
+        outputHTML += `<form ${StateStore.get("formCSSClasses") ? `class="${StateStore.get("formCSSClasses")}"` : ``} data-name="${StateStore.get("formName")}">`;
+        StateStore.get("stepFieldsData").forEach(field => {
+            outputHTML += FormHTMLGenerator.generateInputFieldHTML(field, StateStore.get("addRequiredAttribute"));
         });
-        outputHTML += `<button type="submit">${this.#submitButtonText}</button></form>`;
-        this.#outputNode.outerHTML = outputHTML;
+        outputHTML += `<button type="submit">${StateStore.get("buttonText")}</button></form>`;
+        document.querySelector(StateStore.get("formNodeSelector")).outerHTML = outputHTML;
     }
 
     static generateInputFieldHTML(field, addRequiredAttribute, addOnField = false) {
@@ -66,9 +53,9 @@ export default class FormHTMLGenerator {
         const addOnFieldParentName = addOnField ? `${field.addOnParentName}__` : ``;
         const addOnFieldParam = addOnField ? `addon-sub-item-` : ``;
         const addOnNumber = addOnField ? `__${field.order}` : ``;
-        let outputHTML = `<div id="${fieldIdName}-${addOnFieldParam}container" ${field.type === `addon` ? `data-addon-parent-container` : ``} class="field-container${addOnField ? `add-on-field-container` : ``} field-type-${field.type}" data-${addOnFieldParam}field-container data-name="${addOnFieldParam}${field.name}" data-required="${field.required}"
-            data-order="${field.order}" ${field.minimumRequired ? `data-minimum-required="${field.minimumRequired}"` : ``} data-type="${field.type}">${field.label ? `<label for="${fieldIdName}" data-field-label class="field-label" data-required="${field.required}">${field.label}</label>` : ``}`;
-        const inputFields = ['text', 'email', 'password'];
+        let outputHTML = `<div id="${fieldIdName}-${addOnFieldParam}container" ${field.type === `addon` ? `data-addon-parent-container` : ``} class="field-container ${addOnField ? `add-on-field-container` : ``} field-type-${field.type}" data-${addOnFieldParam}field-container
+            ${!addOnField ? `data-id="${field.id}" data-name="${field.name}"` : ``}>${field.label ? `<label for="${fieldIdName}" data-field-label class="field-label">${field.label}</label>` : ``}`;
+        const inputFields = ['text', 'number', 'email', 'password'];
         if (inputFields.includes(field.type)) {
             outputHTML += `<input id="${fieldIdName}" ${addOnField ? `data-add-on-field` : ``} data-field type="${field.type}" name="${addOnFieldParentName}${field.name}${addOnNumber}" ${field.required  && addRequiredAttribute ? `required` : ``} ${field.placeholder ? `placeholder="${field.placeholder}"` : ``} ${field.value ? `value="${field.value}"` : ``} />`;
         } else {
